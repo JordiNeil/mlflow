@@ -112,7 +112,7 @@ def http_request(
 
     if host_creds.use_databricks_sdk:
         from databricks.sdk.errors import DatabricksError
-
+        _logger.info(f"Retry timeout seconds: {retry_timeout_seconds}")
         ws_client = get_workspace_client(
             host_creds.use_secret_scope_token,
             host_creds.host,
@@ -141,6 +141,7 @@ def http_request(
                     files=kwargs.get("files"),
                     data=kwargs.get("data"),
                 )
+                _logger.info(f"SDK call to {endpoint} completed with status {raw_response.status_code}")
                 return raw_response["contents"]._response
 
         try:

@@ -1,6 +1,7 @@
 import json
 import posixpath
 import warnings
+import logging
 from typing import Any, Iterator, Optional
 
 from mlflow.deployments import BaseDeploymentClient
@@ -17,6 +18,7 @@ from mlflow.utils.annotations import deprecated, experimental
 from mlflow.utils.databricks_utils import get_databricks_host_creds
 from mlflow.utils.rest_utils import augmented_raise_for_status, http_request
 
+_logger = logging.getLogger(__name__)
 
 class DatabricksEndpoint(AttrDict):
     """
@@ -234,6 +236,7 @@ class DatabricksDeploymentClient(BaseDeploymentClient):
                 },
             }
         """
+        _logger.info(f"Predicting with inputs: {inputs}")
         return self._call_endpoint(
             method="POST",
             prefix="/",

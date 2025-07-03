@@ -130,6 +130,7 @@ def http_request(
                 warnings.filterwarnings(
                     "ignore", message=f".*{_DATABRICKS_SDK_RETRY_AFTER_SECS_DEPRECATION_WARNING}.*"
                 )
+                _logger.info(f"Making SDK call to {endpoint}")
                 raw_response = ws_client.api_client.do(
                     method=method,
                     path=endpoint,
@@ -155,18 +156,20 @@ def http_request(
             # TODO: Update transient error handling defaults in Databricks SDK to match standard
             # practices (e.g. retrying on 429, 500, 503, etc.), support custom retries in Databricks
             # SDK, and remove this custom retry wrapper from MLflow
-            return _retry_databricks_sdk_call_with_exponential_backoff(
-                call_func=make_sdk_call,
-                retry_codes=retry_codes,
-                retry_timeout_seconds=(
-                    retry_timeout_seconds
-                    if retry_timeout_seconds is not None
-                    else MLFLOW_DATABRICKS_ENDPOINT_HTTP_RETRY_TIMEOUT.get()
-                ),
-                backoff_factor=backoff_factor,
-                backoff_jitter=backoff_jitter,
-                max_retries=max_retries,
-            )
+
+            return make_sdk_call()
+            # return _retry_databricks_sdk_call_with_exponential_backoff(
+            #     call_func=make_sdk_call,
+            #     retry_codes=retry_codes,
+            #     retry_timeout_seconds=(
+            #         retry_timeout_seconds
+            #         if retry_timeout_seconds is not None
+            #         else MLFLOW_DATABRICKS_ENDPOINT_HTTP_RETRY_TIMEOUT.get()
+            #     ),
+            #     backoff_factor=backoff_factor,
+            #     backoff_jitter=backoff_jitter,
+            #     max_retries=max_retries,
+            # )
         except DatabricksError as e:
             response = requests.Response()
             response.url = url

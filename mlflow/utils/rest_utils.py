@@ -133,6 +133,7 @@ def http_request(
                 _logger.info(f"Making SDK call to {endpoint}")
                 ws_client.api_client._is_retryable = False
                 ws_client.api_client._retry_timeout_seconds = 500
+                ws_client.api_client._http_timeout_seconds = 500
                 raw_response = ws_client.api_client.do(
                     method=method,
                     path=endpoint,

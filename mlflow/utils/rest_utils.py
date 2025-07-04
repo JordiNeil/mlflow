@@ -144,7 +144,7 @@ def http_request(
                     files=kwargs.get("files"),
                     data=kwargs.get("data"),
                 )
-                _logger.info(f"SDK call to {endpoint} completed with status {raw_response.status_code}")
+                _logger.info(f"SDK call to {endpoint} completed")
                 return raw_response["contents"]._response
 
         try:
